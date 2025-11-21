@@ -1,41 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Scroll Reveal Animation
-    const revealElements = document.querySelectorAll('.scroll-reveal');
-
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target); // Only animate once
+    // Disable all animations until page is fully loaded to eliminate CLS
+    const body = document.body;
+    body.classList.add('no-animations');
+    
+    // Font loading - wait longer to prevent CLS
+    const enableAnimations = () => {
+        setTimeout(() => {
+            body.classList.remove('no-animations');
+        }, 500); // Longer delay to ensure everything is loaded
+    };
+    
+    // Check if fonts are already loaded
+    if ('fonts' in document) {
+        const fonts = ['Inter 400', 'Inter 600', 'Inter 700', 'Inter 800'];
+        let fontsLoaded = 0;
+        
+        fonts.forEach(font => {
+            if (document.fonts.check(font)) {
+                fontsLoaded++;
+            } else {
+                document.fonts.load(font).then(() => {
+                    fontsLoaded++;
+                    if (fontsLoaded === fonts.length) {
+                        enableAnimations();
+                    }
+                });
             }
         });
-    }, {
-        root: null,
-        threshold: 0.15, // Trigger when 15% of the element is visible
-        rootMargin: "0px 0px -50px 0px"
-    });
+        
+        if (fontsLoaded === fonts.length) {
+            enableAnimations();
+        }
+    } else {
+        // No font loading API, enable animations after delay
+        enableAnimations();
+    }
 
-    revealElements.forEach(element => {
-        revealObserver.observe(element);
-    });
+    // Scroll Reveal Animation - only start after animations enabled
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    const startReveals = () => {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !document.body.classList.contains('no-animations')) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        });
 
-    // Typing Effect
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+    };
+
+    // Start reveals immediately, but respect animation state
+    startReveals();
+
+    // Typing Effect with stable height
     const typingTextElement = document.querySelector('.typing-text');
     const textToType = "Kami bantu fix webmu hingga siap dipakai.";
     let charIndex = 0;
     let isTyping = false;
 
+    if (typingTextElement) {
+        typingTextElement.style.minHeight = '1.2em';
+        typingTextElement.style.display = 'inline-block';
+        typingTextElement.style.width = 'fit-content';
+        
+        // Clear any existing content
+        typingTextElement.textContent = '';
+    }
+
     const typeWriter = () => {
-        if (charIndex < textToType.length) {
+        if (charIndex < textToType.length && !document.body.classList.contains('no-animations')) {
             typingTextElement.textContent += textToType.charAt(charIndex);
             charIndex++;
-            setTimeout(typeWriter, 50); // Typing speed
+            setTimeout(typeWriter, 50);
         }
     };
 
     const typingObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting && !isTyping) {
+            if (entry.isIntersecting && !isTyping && !document.body.classList.contains('no-animations')) {
                 isTyping = true;
                 typeWriter();
                 typingObserver.unobserve(entry.target);
@@ -47,45 +97,73 @@ document.addEventListener('DOMContentLoaded', () => {
         typingObserver.observe(typingTextElement.parentElement);
     }
 
-    // Count Up Animation
+    // Count Up Animation - prevent layout shifts with stable dimensions
     const countUpElements = document.querySelectorAll('.count-up');
 
-    const countUp = (element) => {
-        const target = +element.getAttribute('data-target');
-        const duration = 2000; // 2 seconds
-        const increment = target / (duration / 16); // 60fps
-
-        let current = 0;
-        const updateCount = () => {
-            current += increment;
-            if (current < target) {
-                element.textContent = Math.ceil(current);
-                requestAnimationFrame(updateCount);
-            } else {
-                element.textContent = target;
+    countUpElements.forEach(element => {
+        const originalDisplay = element.style.display;
+        element.style.display = 'inline-block';
+        element.style.minWidth = '2ch'; // Reserve space for 2 digits
+        
+        const countUp = () => {
+            const target = +element.getAttribute('data-target');
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const updateCount = () => {
+                if (!document.body.classList.contains('no-animations')) {
+                    current += increment;
+                    if (current < target) {
+                        element.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        element.textContent = target;
+                        element.style.minWidth = target.toString().length + 'ch';
+                    }
+                }
+            };
+            
+            if (!document.body.classList.contains('no-animations')) {
+                updateCount();
             }
         };
-        updateCount();
-    };
 
-    const countObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                countUp(entry.target);
-                countObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
+        const countObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    countUp();
+                    countObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
 
-    countUpElements.forEach(el => countObserver.observe(el));
+        countObserver.observe(element);
+    });
 
-    // Smooth Scroll for anchor links (if any are added later)
+    // Smooth Scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
+    });
+
+    // Prevent layout shifts from images
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        if (img.complete) {
+            img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+        } else {
+            img.addEventListener('load', () => {
+                img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+            });
+        }
     });
 });
