@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check if fonts are already loaded
     if ('fonts' in document) {
-        const fonts = ['Inter 400', 'Inter 600', 'Inter 700', 'Inter 800'];
+        const fonts = ['400 1em Inter', '600 1em Inter', '700 1em Inter', '800 1em Inter'];
         let fontsLoaded = 0;
         
         fonts.forEach(font => {
