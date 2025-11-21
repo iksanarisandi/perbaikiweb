@@ -91,9 +91,10 @@ body {
     transform: translateY(-2px);
 }
 
-/* Sections */
+/* Sections with CSS containment to prevent layout shifts */
 section {
     padding: 80px 0;
+    contain: layout style;
 }
 
 .section-title {
@@ -119,7 +120,10 @@ section {
     margin-bottom: 20px;
     background: linear-gradient(to right, var(--text), var(--primary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 .hero .subtitle {
@@ -277,6 +281,25 @@ section {
     transition-delay: 0.4s;
 }
 
+/* Typing Text with stable dimensions */
+.typing-text {
+    min-height: 2.5rem;
+    min-width: 420px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 2.5rem;
+}
+
+/* Count-up with tabular nums for stable width */
+.count-up {
+    min-width: 3ch;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
 /* Typing Cursor */
 .cursor {
     display: inline-block;
@@ -317,5 +340,9 @@ section {
 
     .explanation h2 {
         font-size: 1.75rem;
+    }
+
+    .typing-text {
+        min-width: 300px;
     }
 }

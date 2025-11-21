@@ -2,19 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Disable all animations until page is fully loaded to eliminate CLS
     const body = document.body;
     body.classList.add('no-animations');
-    
+
     // Font loading - wait longer to prevent CLS
     const enableAnimations = () => {
         setTimeout(() => {
             body.classList.remove('no-animations');
-        }, 500); // Longer delay to ensure everything is loaded
+        }, 1000); // Extended delay to ensure fonts and layout are stable
     };
-    
+
     // Check if fonts are already loaded
     if ('fonts' in document) {
         const fonts = ['400 1em Inter', '600 1em Inter', '700 1em Inter', '800 1em Inter'];
         let fontsLoaded = 0;
-        
+
         fonts.forEach(font => {
             if (document.fonts.check(font)) {
                 fontsLoaded++;
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-        
+
         if (fontsLoaded === fonts.length) {
             enableAnimations();
         }
@@ -67,10 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let isTyping = false;
 
     if (typingTextElement) {
-        typingTextElement.style.minHeight = '1.2em';
+        typingTextElement.style.minHeight = '2.5rem';
+        typingTextElement.style.minWidth = '420px';
         typingTextElement.style.display = 'inline-block';
-        typingTextElement.style.width = 'fit-content';
-        
+        typingTextElement.style.lineHeight = '2.5rem';
+
         // Clear any existing content
         typingTextElement.textContent = '';
     }
@@ -102,15 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     countUpElements.forEach(element => {
         const originalDisplay = element.style.display;
-        element.style.display = 'inline-block';
-        element.style.minWidth = '2ch'; // Reserve space for 2 digits
-        
+        element.style.display = 'inline-flex';
+        element.style.minWidth = '3ch'; // Reserve space for 3 digits
+        element.style.fontVariantNumeric = 'tabular-nums'; // Monospaced digits
+
         const countUp = () => {
             const target = +element.getAttribute('data-target');
             const duration = 2000;
             const increment = target / (duration / 16);
             let current = 0;
-            
+
             const updateCount = () => {
                 if (!document.body.classList.contains('no-animations')) {
                     current += increment;
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             };
-            
+
             if (!document.body.classList.contains('no-animations')) {
                 updateCount();
             }

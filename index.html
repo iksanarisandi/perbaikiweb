@@ -4,35 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <title>Perbaiki Website - Jasa Fix & Optimization Website Profesional</title>
-    <meta name="description" content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau, support semua jenis web. Solusi lengkap untuk website error dan lambat.">
-    <meta name="keywords" content="perbaiki website, fix website, jasa website, debugging, refactoring, optimasi website, website error, website lambat, jasa developer, konsultasi website">
+    <meta name="description"
+        content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau, support semua jenis web. Solusi lengkap untuk website error dan lambat.">
+    <meta name="keywords"
+        content="perbaiki website, fix website, jasa website, debugging, refactoring, optimasi website, website error, website lambat, jasa developer, konsultasi website">
     <meta name="author" content="PerbaikiWeb">
     <meta name="robots" content="index, follow">
     <meta name="language" content="id">
     <link rel="canonical" href="https://iksanarisandi.github.io/perbaikiweb/">
-    
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Perbaiki Website - Jasa Fix & Optimization Website Profesional">
-    <meta property="og:description" content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau. Solusi lengkap untuk website error dan lambat.">
+    <meta property="og:description"
+        content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau. Solusi lengkap untuk website error dan lambat.">
     <meta property="og:url" content="https://iksanarisandi.github.io/perbaikiweb/">
     <meta property="og:site_name" content="PerbaikiWeb">
     <meta property="og:locale" content="id_ID">
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Perbaiki Website - Jasa Fix & Optimization Website Profesional">
-    <meta name="twitter:description" content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau.">
+    <meta name="twitter:description"
+        content="Jasa perbaikan website profesional untuk debugging, refactoring, optimasi performa. Free konsultasi, harga terjangkau.">
     <meta name="twitter:site" content="@perbaikiweb">
-    
+
     <!-- Additional SEO Meta -->
     <meta name="theme-color" content="#2563EB">
     <meta name="msapplication-TileColor" content="#2563EB">
     <meta name="application-name" content="PerbaikiWeb">
-    
+
     <!-- Structured Data - Business Information -->
     <script type="application/ld+json">
     {
@@ -57,16 +61,15 @@
         "availableLanguage": ["Indonesian", "English"]
     }
     </script>
-    
-    <!-- Font Preconnect and Preload - removing display=swap to prevent CLS -->
+
+    <!-- Font Preconnect and Direct Loading with font-display=swap to minimize CLS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800"></noscript>
-    
-    <!-- Critical CSS inline to prevent FOUC -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Critical CSS inline to prevent FOUC and CLS -->
     <style>
-        /* System fonts to prevent layout shifts */
+        /* System fonts as fallback with font-display behavior */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: 16px;
@@ -76,21 +79,31 @@
             box-sizing: border-box;
             overflow-x: hidden;
         }
-        
-        /* Reserve space for dynamic elements */
+
+        /* CSS Containment for sections to prevent layout shifts */
+        section {
+            contain: layout style;
+        }
+
+        /* Reserve exact space for typing text to prevent shifts */
         .typing-text {
-            min-height: 1.2em;
+            min-height: 2.5rem;
+            min-width: 420px;
             display: inline-block;
-            width: fit-content;
-            visibility: visible;
+            vertical-align: top;
+            line-height: 2.5rem;
         }
-        
+
+        /* Stable dimensions for count-up numbers */
         .count-up {
-            min-width: 1ch;
-            display: inline-block;
+            min-width: 3ch;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            font-variant-numeric: tabular-nums;
         }
-        
+
         .cursor {
             display: inline-block;
             width: 4px;
@@ -100,52 +113,68 @@
             vertical-align: middle;
             border-radius: 2px;
         }
-        
+
         /* Disable animations until fully loaded */
-        .fade-in {
+        body.no-animations .fade-in {
             opacity: 1;
             animation: none;
         }
-        
-        .scroll-reveal {
+
+        body.no-animations .scroll-reveal {
             opacity: 1;
             transform: translateY(0);
             transition: none;
         }
-        
-        /* Reserve dimensions for key elements */
+
+        /* Reserve exact dimensions for key elements to prevent CLS */
         .hero h1 {
-            min-height: 3.6em;
+            min-height: 4.2rem;
+            line-height: 1.2;
             background: linear-gradient(to right, #1e293b, #2563EB);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
-        
+
         .hero .subtitle {
-            min-height: 1.35em;
+            min-height: 1.7rem;
             max-width: 600px;
         }
-        
+
         .feature-card {
-            min-height: 120px;
+            min-height: 150px;
         }
-        
+
         .pricing-card {
-            min-height: 180px;
+            min-height: 220px;
         }
-        
+
         .explanation h2 {
-            min-height: 3em;
+            min-height: 3rem;
         }
-        
+
         .footer h3 {
-            min-height: 1.8em;
+            min-height: 2rem;
+        }
+
+        /* Performance hints */
+        .btn {
+            will-change: transform;
+        }
+
+        @media (max-width: 768px) {
+            .typing-text {
+                min-width: 300px;
+            }
         }
     </style>
-    
+
     <link rel="preload" href="style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="style.min.css"></noscript>
+    <noscript>
+        <link rel="stylesheet" href="style.min.css">
+    </noscript>
 </head>
 
 <body>
@@ -153,7 +182,9 @@
     <header class="header fade-in">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="logo">PerbaikiWeb</div>
-            <a href="https://wa.me/6282347303153?text=Halo%20kak%2C%20mau%20konsultasi%20perbaiki%20web%20saya" target="_blank" class="btn btn-primary" aria-label="Hubungi kami via WhatsApp untuk konsultasi">Mulai Konsultasi</a>
+            <a href="https://wa.me/6282347303153?text=Halo%20kak%2C%20mau%20konsultasi%20perbaiki%20web%20saya"
+                target="_blank" class="btn btn-primary" aria-label="Hubungi kami via WhatsApp untuk konsultasi">Mulai
+                Konsultasi</a>
         </div>
     </header>
 
@@ -161,9 +192,11 @@
         <section class="hero">
             <div class="container">
                 <h1 class="fade-in">Website Error? <br>Kami Solusinya.</h1>
-                <p class="subtitle fade-in delay-1">Jasa perbaikan website profesional, debugging, refactoring, hingga optimasi performa.</p>
+                <p class="subtitle fade-in delay-1">Jasa perbaikan website profesional, debugging, refactoring, hingga
+                    optimasi performa.</p>
                 <div class="fade-in delay-2">
-                    <a href="#features" class="btn btn-primary" aria-label="Pelajari lebih lanjut tentang layanan kami">Pelajari Lebih Lanjut</a>
+                    <a href="#features" class="btn btn-primary"
+                        aria-label="Pelajari lebih lanjut tentang layanan kami">Pelajari Lebih Lanjut</a>
                 </div>
             </div>
         </section>
@@ -214,7 +247,8 @@
             <div class="container">
                 <div class="explanation-content scroll-reveal">
                     <h2><span class="typing-text"></span><span class="cursor"></span></h2>
-                    <p>Kami menyediakan layanan lengkap mulai dari debugging code, refactoring struktur, responsive design, integrasi API, hingga deployment website yang siap digunakan.</p>
+                    <p>Kami menyediakan layanan lengkap mulai dari debugging code, refactoring struktur, responsive
+                        design, integrasi API, hingga deployment website yang siap digunakan.</p>
                 </div>
             </div>
         </section>
@@ -224,8 +258,11 @@
         <div class="container">
             <div class="footer-content scroll-reveal">
                 <h3>Butuh bantuan sekarang?</h3>
-                <a href="https://wa.me/6282347303153?text=Halo%20kak%2C%20mau%20konsultasi%20perbaiki%20web%20saya" target="_blank" class="btn btn-white" aria-label="Chat dengan kami via WhatsApp">Chat via WhatsApp</a>
-                <p class="footer-info">© 2024 Perbaiki Website. Layanan profesional untuk developer & pemilik bisnis di Indonesia.</p>
+                <a href="https://wa.me/6282347303153?text=Halo%20kak%2C%20mau%20konsultasi%20perbaiki%20web%20saya"
+                    target="_blank" class="btn btn-white" aria-label="Chat dengan kami via WhatsApp">Chat via
+                    WhatsApp</a>
+                <p class="footer-info">© 2024 Perbaiki Website. Layanan profesional untuk developer & pemilik bisnis di
+                    Indonesia.</p>
             </div>
         </div>
     </footer>
